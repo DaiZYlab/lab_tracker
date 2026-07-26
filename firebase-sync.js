@@ -89,4 +89,8 @@
   };
 
   window.LabSync = API;
+
+  // Auto-connect as soon as this script loads (config is loaded just before us).
+  // Harmless if there is no config — init() no-ops and status stays 'off'.
+  try { API.init(); } catch (e) {}
 })();
