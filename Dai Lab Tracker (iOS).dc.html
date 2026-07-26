@@ -244,13 +244,16 @@ class Component extends DCLogic {
       this.state = { view:'people', people:[], projects:[], grants:[], papers:[], labProjects:[] };
     }
   }
-  componentDidMount(){
+  componentDidMount(){ this._syncTries=0; this._waitForSync(); }
+  _waitForSync(){
     if (window.LabSync) {
+      window.LabSync.subscribe((d)=>{ this._fromRemote=true; this.setState({ people:d.people||[], projects:d.projects||[], grants:d.grants||[], papers:d.papers||[], labProjects:d.labProjects||[] }); });
       window.LabSync.init().then((ok)=>{
         if (ok) window.LabSync.save({ people:this.state.people, projects:this.state.projects, grants:this.state.grants, papers:this.state.papers, labProjects:this.state.labProjects });
       });
-      window.LabSync.subscribe((d)=>{ this._fromRemote=true; this.setState({ people:d.people||[], projects:d.projects||[], grants:d.grants||[], papers:d.papers||[], labProjects:d.labProjects||[] }); });
+      return;
     }
+    if (this._syncTries++ < 40) setTimeout(()=>this._waitForSync(), 150);
   }
   _persist(){ try { localStorage.setItem(this.KEY, JSON.stringify({ people:this.state.people, projects:this.state.projects, grants:this.state.grants, papers:this.state.papers, labProjects:this.state.labProjects })); } catch(e) {} }
   componentDidUpdate(){

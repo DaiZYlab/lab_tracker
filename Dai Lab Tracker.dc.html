@@ -547,15 +547,20 @@ class Component extends DCLogic {
     }
     if (this.state.view === 'overview') this.state.view = 'people';
   }
-  componentDidMount(){
+  componentDidMount(){ this._syncTries=0; this._waitForSync(); }
+  _waitForSync(){
     if (window.LabSync) {
+      window.LabSync.subscribe((d)=>{ this._fromRemote=true; this.setState({ people:d.people||[], projects:d.projects||[], grants:d.grants||[], papers:d.papers||[], labProjects:d.labProjects||[] }); });
       window.LabSync.init().then((ok)=>{
         if (ok) window.LabSync.save({ people:this.state.people, projects:this.state.projects, grants:this.state.grants, papers:this.state.papers, labProjects:this.state.labProjects });
         this.forceUpdate();
       });
-      window.LabSync.subscribe((d)=>{ this._fromRemote=true; this.setState({ people:d.people||[], projects:d.projects||[], grants:d.grants||[], papers:d.papers||[], labProjects:d.labProjects||[] }); });
+      let n=0; this._statusTimer=setInterval(()=>{ this.forceUpdate(); if(++n>12) clearInterval(this._statusTimer); }, 700);
+      return;
     }
+    if (this._syncTries++ < 40) setTimeout(()=>this._waitForSync(), 150);
   }
+  componentWillUnmount(){ if(this._statusTimer) clearInterval(this._statusTimer); }
   componentDidUpdate(){
     try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch(e) {}
     if (this._fromRemote) { this._fromRemote=false; return; }
