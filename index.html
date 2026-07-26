@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dai Lab Tracker</title>
+<meta name="theme-color" content="#ba0c2f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dai Lab">
+<link rel="apple-touch-icon" href="assets/app-icon-180.png">
+<link rel="icon" type="image/png" href="assets/app-icon-192.png">
+<style>html,body{margin:0;height:100%;background:#ba0c2f;font-family:-apple-system,system-ui,sans-serif}
+.s{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;letter-spacing:.02em;opacity:.85}</style>
+<script>
+(function(){
+  // Choose layout: phone-style app on small/touch screens, desktop website otherwise.
+  var narrow = window.matchMedia && window.matchMedia('(max-width: 820px)').matches;
+  var touchUA = /Mobi|Android|iPhone|iPod|Windows Phone/i.test(navigator.userAgent);
+  var isMobile = narrow || touchUA;
+  // allow manual override: ?view=mobile or ?view=desktop
+  var q = (location.search.match(/[?&]view=(mobile|desktop)/) || [])[1];
+  if (q === 'mobile') isMobile = true;
+  if (q === 'desktop') isMobile = false;
+  location.replace(isMobile ? 'm.html' : 'd.html');
+})();
+</script>
+</head>
+<body>
+<div class="s">Opening Dai Lab Tracker…</div>
+</body>
+</html>
